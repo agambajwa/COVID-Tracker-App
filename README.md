@@ -7,8 +7,11 @@ This is a basic Android App to track the cases of COVID-19 globally.
 * [Android Studio](https://developer.android.com/studio)
 * [Volley Library](https://developer.android.com/training/volley/index.html) - To get the data
 
+## Contributors
+
 **Agampreet Singh Bajwa** - *Initial work* - [agambajwa](https://github.com/agambajwa)
 
+## Acknowledgement
 Thanks to [abdulazizahwan](https://github.com/abdulazizahwan) for his work and his video.
 [YouTube Video](https://youtu.be/P60i4P4E_e0)
 

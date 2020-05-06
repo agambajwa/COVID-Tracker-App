@@ -1,4 +1,4 @@
-##COVID-19 Tracker App
+# COVID-19 Tracker App
 
 This is a basic Android App to track the cases of COVID-19 globally.
 

@@ -23,8 +23,11 @@ import com.example.myapplication.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class HomeFragment extends Fragment {
-    private TextView tvTotalConfirmed, tvTotalDeaths, tvTotalRecovered;
+    private TextView tvTotalConfirmed, tvTotalDeaths, tvTotalRecovered, tvLastUpdated;
     private ProgressBar progressBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -37,9 +40,19 @@ public class HomeFragment extends Fragment {
 
         progressBar = root.findViewById(R.id.progress_circular_home);
 
+        tvLastUpdated = root.findViewById(R.id.tvLastUpdated);
+
         getData();
 
         return root;
+    }
+
+    private String getDate(long milliSeconds) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy, hh:mm:ss aaa");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+
+        return simpleDateFormat.format(calendar.getTime());
     }
 
     private void getData() {
@@ -56,6 +69,7 @@ public class HomeFragment extends Fragment {
                     tvTotalConfirmed.setText(jsonObject.getString("cases"));
                     tvTotalDeaths.setText(jsonObject.getString("deaths"));
                     tvTotalRecovered.setText(jsonObject.getString("recovered"));
+                    tvLastUpdated.setText("Last updated\n" + getDate(jsonObject.getLong("updated")));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.country;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,6 +49,10 @@ public class CountryFragment extends Fragment {
         progressBar = root.findViewById((R.id.progress_circular_country));
         rvCovidCountry.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvCovidCountry.getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.line_divider));
+        rvCovidCountry.addItemDecoration(dividerItemDecoration);
+
         getDataFromServer();
         return root;
     }
@@ -53,7 +60,20 @@ public class CountryFragment extends Fragment {
     private void showRecyclerView() {
         CovidCountryAdapter covidCountryAdapter = new CovidCountryAdapter(covidCountries);
         rvCovidCountry.setAdapter(covidCountryAdapter);
+        ItemClickSupport.addTo(rvCovidCountry).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                showCountry(covidCountries.get(position));
+            }
+        });
     }
+
+    private void showCountry(CovidCountry covidCountry) {
+        Intent countryDetail = new Intent(getActivity(), CountryDetails.class);
+        countryDetail.putExtra("EXTRA_COVID", covidCountry);
+        startActivity(countryDetail);
+    }
+
     private void getDataFromServer() {
         String url = "https://corona.lmao.ninja/v2/countries";
 
@@ -68,7 +88,16 @@ public class CountryFragment extends Fragment {
                         JSONArray jsonArray = new JSONArray(response);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject data = jsonArray.getJSONObject(i);
-                            covidCountries.add(new CovidCountry(data.getString("country"), data.getString("cases")));
+                            covidCountries.add(new CovidCountry(
+                                    data.getString("country"),
+                                    data.getString("cases"),
+                                    data.getString("todayCases"),
+                                    data.getString("deaths"),
+                                    data.getString("todayDeaths"),
+                                    data.getString("recovered"),
+                                    data.getString("critical"),
+                                    data.getString("active"),
+                                    data.getString("tests")));
                         }
                         showRecyclerView();
                     } catch (JSONException e) {
